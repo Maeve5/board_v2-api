@@ -1,5 +1,5 @@
 const express = require('express');
-const verify = require()
+const verify = require('../../middleware/verify');
 const listRouter = express.Router();
 
 // 게시글 목록 조회

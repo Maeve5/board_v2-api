@@ -1,4 +1,6 @@
 const express = require('express');
+const verify = require('../../middleware/verify');
+const password = require('../../middleware/password');
 const userRouter = express.Router();
 
 // 회원 가입

@@ -30,7 +30,6 @@ app.all('*', (req, res, next) => {
   res.json({ message: "BOARD API" });
 });
 
-app.listen(8082, () => {
-  _global.ip = ip.address();
+app.listen(8083, () => {
   console.log(ip.address() + ' :: start');
 });
