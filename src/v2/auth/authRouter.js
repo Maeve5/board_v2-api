@@ -8,6 +8,6 @@ authRouter.post('/login', apiStart, require('./login').login, apiEnd);
 // 로그아웃
 // authRouter.post('/logout', require('./logout').logout);
 // 토큰 확인
-// authRouter.post('/token', require('./token').token);
+authRouter.post('/token', apiStart, require('./token').token, apiEnd);
 
 module.exports = authRouter;

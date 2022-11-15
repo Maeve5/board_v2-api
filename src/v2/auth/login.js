@@ -65,10 +65,10 @@ exports.login = async (req, res, next) => {
 		res.cookie('board_cookie', token, { domain: 'localhost', maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true });
 
 		res.locals.status = 200;
-		res.locals.data = {
-			message: 'SUCCESS',
-			token: token
-		};
+		// res.locals.data = {
+		// 	message: 'SUCCESS',
+		// 	token: token
+		// };
 		next();
 	}
 	catch (error) {
