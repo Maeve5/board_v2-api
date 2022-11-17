@@ -35,8 +35,6 @@ exports.gets = async (req, res, next) => {
 		}
 		const result1 = await conn.query(sql1);
 		const list = result1[0];
-
-		// console.log('list', list);
 		
 		res.locals.status = 200;
 		res.locals.data = {list, length};

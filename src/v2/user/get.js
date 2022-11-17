@@ -2,6 +2,8 @@ const db = require("../../config/database");
 
 exports.get = async (req, res, next) => {
 	// `/v2/user/:userKey`
+
+	// params
 	const { userKey } = req.params;
 
 	// db 연결

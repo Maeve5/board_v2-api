@@ -7,13 +7,13 @@ const listRouter = express.Router();
 // 게시글 목록 조회
 listRouter.get('/', apiStart, require('./gets').gets, apiEnd);
 // 게시글 조회
-// listRouter.get('/:listKey', verify, require('./get').get);
+listRouter.get('/:listKey', apiStart, verify, require('./get').get, apiEnd);
 // 게시글 작성
 listRouter.post('/', apiStart, verify, require('./insert').insert, apiEnd);
 // 게시글 수정
-// listRouter.patch('/', verify, require('./update').update);
+listRouter.patch('/:listKey', apiStart, verify, require('./update').update, apiEnd);
 // 게시글 삭제
-// listRouter.delete('/', verify, require('./delete').delete);
+listRouter.delete('/:listKey', apiStart, verify, require('./delete').delete, apiEnd);
 
 
 module.exports = listRouter;
