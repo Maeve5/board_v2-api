@@ -24,7 +24,6 @@ app.use(
 app.use('/v2', require('./v2/router'));
 
 app.all('*', (req, res, next) => {
-  console.log('req', req);
   if (res.status) {
     res.status(404);
   }

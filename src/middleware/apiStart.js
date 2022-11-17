@@ -6,7 +6,7 @@ const apiStart = async (req, res, next) => {
 	}
 	catch (error) {
 		res.locals.error = error;
-		res.status(500).send({ message: '[00] 시스템 오류가 발생했습니다.'});
+		res.status(500).json({ message: '[00] 시스템 오류가 발생했습니다.'});
 	}
 };
 
