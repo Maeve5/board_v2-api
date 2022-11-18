@@ -16,7 +16,7 @@ exports.get = async (req, res, next) => {
 			FROM user_tb
 			WHERE isDelete='N' AND userKey=${conn.escape(userKey)}
 		`;
-		
+
 		const result = await conn.query(sql);
 		const user = result[0][0];
 

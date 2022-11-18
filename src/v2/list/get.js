@@ -4,7 +4,7 @@ const Global = global;
 exports.get = async (req, res, next) => {
 	// `/v2/list/:listKey`
 
-	// query
+	// params
 	const listKey = req.params.listKey;
 	// token
 	const user = Global.decoded;

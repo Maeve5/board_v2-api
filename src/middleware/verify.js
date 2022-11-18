@@ -27,7 +27,7 @@ const verify = async (req, res, next) => {
 			// 	exp: 1668739897,
 			// 	iss: '발급자'
 			// }
-				
+
 			next();
 		}
 	}

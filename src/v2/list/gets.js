@@ -2,7 +2,8 @@ const db = require('../../config/database');
 
 exports.gets = async (req, res, next) => {
 	// `/v2/list`
-	// 파라미터
+
+	// query
 	const { pageSize, currentPage } = req.query
 
 	// db 연결

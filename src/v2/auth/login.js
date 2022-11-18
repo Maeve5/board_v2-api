@@ -78,6 +78,7 @@ exports.login = async (req, res, next) => {
 		res.cookie('board_cookie', token, { domain: 'localhost', maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true });
 
 		res.locals.status = 200;
+		res.locals.data = {name: user.name};
 		next();
 	}
 	catch (error) {
