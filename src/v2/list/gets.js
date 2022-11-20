@@ -4,20 +4,20 @@ exports.gets = async (req, res, next) => {
 	// `/v2/list`
 
 	// query
-	const { pageSize, currentPage } = req.query
+	const { pageSize, currentPage, userKey } = req.query
 
 	// db 연결
 	const conn = await db.getConnection();
 
 	try {
 
-		const sql = `
+		let sql = `
 			SELECT T.* FROM(
 				SELECT
 					L.rowKey
 					, L.title
 					, L.description
-					, DATE_FORMAT(L.createdTime, '%Y-%m-%d %H:%i') AS createdTime
+					, DATE_FORMAT(L.createdTime, '%Y-%m-%d') AS createdTime
 					, L.userKey
 					, U.name
 				FROM list_tb L
@@ -27,9 +27,15 @@ exports.gets = async (req, res, next) => {
 			) T
 		`;
 		
+		// 내가 쓴 글 조회
+		if (userKey) {
+			sql += `WHERE T.userKey=${conn.escape(userKey)}`
+		}
+
 		const result = await conn.query(sql);
 		const length = result[0].length;
 
+		// 페이지 별 게시글 조회
 		let sql1 = sql;
 		if (pageSize && currentPage) {
 			sql1 += `LIMIT ${pageSize*(currentPage-1)}, ${pageSize}`

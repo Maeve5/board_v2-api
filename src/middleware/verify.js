@@ -11,7 +11,7 @@ const verify = async (req, res, next) => {
 		// 
 		if (!token) {
 			res.locals.status = 400;
-			res.locals.data = { message }
+			res.locals.data = { message: '로그인이 필요합니다.' }
 			next();
 			return false;
 		}
