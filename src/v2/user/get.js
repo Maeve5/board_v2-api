@@ -2,7 +2,8 @@ const db = require("../../config/database");
 
 exports.get = async (req, res, next) => {
 	// `/v2/user/:userKey`
-
+console.log(req);
+	
 	// params
 	const { userKey } = req.params;
 

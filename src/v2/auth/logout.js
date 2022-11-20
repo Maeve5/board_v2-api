@@ -11,7 +11,7 @@ exports.logout = async (req, res, next) => {
 	try {
 		// 로그인 상태 변경
 		const sql = `
-				UPDATE
+			UPDATE
 				user_tb
 			SET isLogin='N'
 			WHERE userKey=${conn.escape(userKey)}

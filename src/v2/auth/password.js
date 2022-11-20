@@ -1,27 +1,18 @@
 const Global = global;
-const db = require("../config/database");
+const db = require("../../config/database");
 const bcrypt = require('bcrypt');
 
-const password = async (req, res, next) => {
+exports.password = async (req, res, next) => {
+	// `/v2/auth/password`
 
-	// query
-	const { passPW } = req.query;
-	console.log(passPW);
-
-	if (passPW === 'Y') {
-		next();
-		return false;
-	}
-	
 	// body
-	let { password } = req.body;
+	const { password } = req.body;
 	// token
 	const user = Global.decoded;
 	// db 연결
 	const conn = await db.getConnection();
 
 	try {
-
 		// 비밀번호가 없을 때
 		if (!password) {
 			res.locals.status = 400;
@@ -35,11 +26,13 @@ const password = async (req, res, next) => {
 			SELECT
 				password
 			FROM user_tb
-			WHERE isDelete='Y' AND userKey=${conn.escape(user.userKey)}
+			WHERE isDelete='N' AND isLogin='Y' AND userKey=${conn.escape(user.userKey)}
 		`;
+		const result1 = await conn.query(sql1);
+		const userPW = result1[0][0];
 
 		// 비밀번호 확인
-		const pwCheck = bcrypt.compareSync(password, user.password);
+		const pwCheck = bcrypt.compareSync(password, userPW.password);
 
 		// 비밀번호 확인 실패
 		if (!pwCheck) {
@@ -49,6 +42,7 @@ const password = async (req, res, next) => {
 			return false;
 		}
 
+		res.locals.status = 200;
 		next();
 	}
 	catch (error) {
@@ -61,5 +55,3 @@ const password = async (req, res, next) => {
 		await conn.release();
 	}
 };
-
-module.exports = password;
