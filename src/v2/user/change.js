@@ -19,7 +19,7 @@ exports.change = async (req, res, next) => {
 			next();
 			return false;
 		}
-
+		
 		// 이름 변경
 		if (name) {
 			const sql = `

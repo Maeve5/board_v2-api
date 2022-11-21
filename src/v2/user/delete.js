@@ -19,6 +19,7 @@ exports.delete = async (req, res, next) => {
 			return false;
 		}
 
+		// 비밀번호 조회
 		const sql = `
 			SELECT
 				password
@@ -43,11 +44,15 @@ exports.delete = async (req, res, next) => {
 		const sql1 = `
 			UPDATE
 				user_tb
-			SET isDelete='Y' AND isLogin='N'
+			SET isDelete='Y', isLogin='N'
 			WHERE userKey=${conn.escape(userKey)}
 		`;
-		// const result1 = await conn.query(sql1);
+		await conn.query(sql1);
 
+		// 쿠키 삭제
+		res.cookie('board_cookie', '', { domain: 'localhost', maxAge: -1, httpOnly: true });
+
+		// 내가 쓴 글 조회
 		const sql2 = `
 			SELECT
 				rowKey
@@ -55,11 +60,21 @@ exports.delete = async (req, res, next) => {
 			WHERE isDelete='N' AND userKey=${conn.escape(userKey)}
 		`;
 		const result2 = await conn.query(sql2);
-		const rowKey = result2[0].map((row) => {
+		const rowKeyArr = result2[0].map((row) => {
 			return row.rowKey;
-		})
-		console.log(rowKey);
+		});
 
+		// 내가 쓴 글 삭제 처리
+		const sql3 = `
+			UPDATE
+				list_tb
+			SET isDelete='Y'
+			WHERE rowKey IN (${rowKeyArr.join()})
+		`;
+		await conn.query(sql3);
+
+		res.locals.status = 200;
+		next();
 	}
 	catch (error) {
 		console.log('error', error);
