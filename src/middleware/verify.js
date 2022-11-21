@@ -6,10 +6,11 @@ const verify = async (req, res, next) => {
 
 	try {
 		// 유저 정보
-		const token = req.cookies.board_cookie;
+		const accToken = req.cookies.board_accCookie;
+		const refToken = req.cookies.board_refCookie;
 
 		// 토큰이 없을 때
-		if (!token) {
+		if (!accToken || accToken === 'null' || !refToken || refToken === 'null') {
 			res.locals.status = 400;
 			res.locals.data = { message: '로그인이 필요합니다.' }
 			next();
@@ -18,7 +19,7 @@ const verify = async (req, res, next) => {
 
 		// 토큰 확인
 		else {
-			Global.decoded = jwt.verify(token, jwtKey);
+			Global.decoded = jwt.verify(accToken, jwtKey);
 			// decoded {
 			// 	type: 'JWT',
 			// 	userKey: 3,

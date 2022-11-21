@@ -5,7 +5,6 @@ const jwtKey = require('../../config/secretKey');
 
 exports.login = async (req, res, next) => {
 	// `/v2/auth/login`
-
 	// body
 	const { id, password } = req.body;
 	// db 연결
@@ -55,17 +54,8 @@ exports.login = async (req, res, next) => {
 			return false;
 		}
 
-		// 로그인 상태 변경
-		const sql2 = `
-			UPDATE
-				user_tb
-			SET isLogin='Y'
-			WHERE userKey=${conn.escape(user.userKey)}
-		`;
-		await conn.query(sql2);
-
-		// 토큰 발급 (24h)
-		const token = jwt.sign({
+		// 토큰 발급 (24h, 7d)
+		const accessToken = jwt.sign({
 			type: 'JWT',
 			userKey: user.userKey,
 			name: user.name,
@@ -74,12 +64,31 @@ exports.login = async (req, res, next) => {
 			expiresIn: '24h',
 			issuer: '발급자'
 		});
+
+		const refreshToken = jwt.sign({
+			type: 'JWT',
+			userKey: user.userKey,
+			name: user.name,
+			id: user.id,
+		}, jwtKey, {
+			expiresIn: '7d',
+			issuer: '발급자'
+		});
 		
-		// 쿠키 생성 (1w)
-		res.cookie('board_cookie', token, { domain: 'localhost', maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true });
+		// 쿠키 생성 (7d)
+		res.cookie('board_accCookie', accessToken, { domain: 'localhost', maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true });
+		res.cookie('board_refCookie', refreshToken, { domain: 'localhost', maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true });
+
+		// 로그인 상태 변경
+		const sql2 = `
+			UPDATE
+				user_tb
+			SET isLogin='Y', refreshToken=${conn.escape(refreshToken)}
+			WHERE userKey=${conn.escape(user.userKey)}
+		`;
+		await conn.query(sql2);
 
 		res.locals.status = 200;
-		res.locals.data = {name: user.name};
 		next();
 	}
 	catch (error) {

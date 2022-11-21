@@ -1,14 +1,16 @@
 const jwt = require('jsonwebtoken');
 const jwtKey = require('../../config/secretKey');
+const moment = require('moment');
 
 exports.token = async (req, res, next) => {
 
 	try {
 		// 유저 정보
-		const token = req.headers.authorization;
+		// const token = req.headers.authorization;
+		const accToken = req.headers.authorization;
 
 		// 비회원
-		if (!token || token === 'null') {
+		if (!accToken || accToken === 'null') {
 			res.locals.status = 200;
 			res.locals.data = { isLogin: false }
 			next();
@@ -16,11 +18,17 @@ exports.token = async (req, res, next) => {
 
 		// 회원
 		else {
-			const verify = jwt.verify(token, jwtKey);
-			console.log(verify);
+			const verify = jwt.verify(accToken, jwtKey);
+			const time = moment(verify.exp*1000).format('YYYYMMDD HH:mm:ss');
+			// const time = moment(verify.exp*1000).toDate();
+			console.log('time', time);
+			const today = moment().format('YYYYMMDD HH:mm:ss');
+			console.log('today' ,today);
+			const exp = moment(time, today).fromNow();
+			console.log('exp', exp);
 
 			res.locals.status = 200;
-			res.locals.data = { isLogin: true, token: token, userKey: verify.userKey, userName: verify.name };
+			res.locals.data = { isLogin: true, token: accToken, userKey: verify.userKey, userName: verify.name };
 			next();
 		}
 	}

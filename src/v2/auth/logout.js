@@ -13,13 +13,14 @@ exports.logout = async (req, res, next) => {
 		const sql = `
 			UPDATE
 				user_tb
-			SET isLogin='N'
+			SET isLogin='N', refreshToken=null
 			WHERE userKey=${conn.escape(userKey)}
 		`;
 		await conn.query(sql);
 
 		// 쿠키 삭제
-		res.cookie('board_cookie', '', { domain: 'localhost', maxAge: -1, httpOnly: true });
+		res.cookie('board_accCookie', '', { domain: 'localhost', maxAge: -1, httpOnly: true });
+		res.cookie('board_refCookie', '', { domain: 'localhost', maxAge: -1, httpOnly: true });
 
 		res.locals.status = 200;
 		next();

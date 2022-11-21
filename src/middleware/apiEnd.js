@@ -1,6 +1,6 @@
 const apiEnd = async (req, res, next) => {
 	try {
-		if (res.locals.status === 400){
+		if (res.locals.status !== 200){
 			res.status(400).json(res.locals.data);
 			return false;
 		}
