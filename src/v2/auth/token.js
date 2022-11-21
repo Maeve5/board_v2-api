@@ -6,7 +6,6 @@ exports.token = async (req, res, next) => {
 
 	try {
 		// 유저 정보
-		// const token = req.headers.authorization;
 		const accToken = req.headers.authorization;
 
 		// 비회원
@@ -18,14 +17,26 @@ exports.token = async (req, res, next) => {
 
 		// 회원
 		else {
+			// 토큰 검증
 			const verify = jwt.verify(accToken, jwtKey);
-			const time = moment(verify.exp*1000).format('YYYYMMDD HH:mm:ss');
-			// const time = moment(verify.exp*1000).toDate();
-			console.log('time', time);
-			const today = moment().format('YYYYMMDD HH:mm:ss');
-			console.log('today' ,today);
-			const exp = moment(time, today).fromNow();
+			console.log(verify);
+			const exp = moment(verify.exp*1000);
 			console.log('exp', exp);
+			const today = moment();
+			console.log('today', today);
+			const beforeExp = exp.subtract(1,'hours');
+			
+			// 엑세스 토큰 만료 한시간 전 ~ 만료 시간
+			if ( moment(beforeExp).isSameOrBefore(today) && moment(exp).isAfter(today) ) {
+				// res.locals.data = { message: '로그인 상태를 유지하시겠습니까?' };
+			}
+
+			if (error.message === 'jwt expired') {
+				console.log('hi');
+			}
+
+			// 엑세스 토큰 만료
+			// if ()
 
 			res.locals.status = 200;
 			res.locals.data = { isLogin: true, token: accToken, userKey: verify.userKey, userName: verify.name };

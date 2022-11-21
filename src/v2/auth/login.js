@@ -61,7 +61,7 @@ exports.login = async (req, res, next) => {
 			name: user.name,
 			id: user.id,
 		}, jwtKey, {
-			expiresIn: '24h',
+			expiresIn: '1m',
 			issuer: '발급자'
 		});
 
