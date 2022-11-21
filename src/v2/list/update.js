@@ -11,7 +11,7 @@ exports.update = async (req, res, next) => {
 	const conn = await db.getConnection();
 
 	try {
-
+		// 값이 없을 때
 		if (!listKey) {
 			res.locals.status = 400;
 			res.locals.data = { message: '잘못된 접근입니다.' };
@@ -31,6 +31,7 @@ exports.update = async (req, res, next) => {
 			return false;
 		}
 
+		// 게시글 수정
 		const sql = `
 			UPDATE
 				list_tb

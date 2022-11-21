@@ -12,7 +12,7 @@ exports.join = async (req, res, next) => {
 	const conn = await db.getConnection();
 
 	try {
-
+		// 값이 없을 때
 		if (!name) {
 			res.locals.status = 400;
 			res.locals.data = { message: '이름을 입력해주세요.' };

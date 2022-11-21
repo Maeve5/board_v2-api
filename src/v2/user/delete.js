@@ -38,8 +38,28 @@ exports.delete = async (req, res, next) => {
 			next();
 			return false;
 		}
-
 		
+		// 회원 탈퇴 처리
+		const sql1 = `
+			UPDATE
+				user_tb
+			SET isDelete='Y' AND isLogin='N'
+			WHERE userKey=${conn.escape(userKey)}
+		`;
+		// const result1 = await conn.query(sql1);
+
+		const sql2 = `
+			SELECT
+				rowKey
+			FROM list_tb
+			WHERE isDelete='N' AND userKey=${conn.escape(userKey)}
+		`;
+		const result2 = await conn.query(sql2);
+		const rowKey = result2[0].map((row) => {
+			return row.rowKey;
+		})
+		console.log(rowKey);
+
 	}
 	catch (error) {
 		console.log('error', error);

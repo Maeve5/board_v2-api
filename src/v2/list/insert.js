@@ -12,6 +12,7 @@ exports.insert = async (req, res, next) => {
 	const conn = await db.getConnection();
 
 	try {
+		// 값이 없을 때
 		if (!title) {
 			res.locals.status = 400;
 			res.locals.data = { message: '제목을 입력해주세요.' };

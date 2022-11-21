@@ -5,7 +5,6 @@ exports.gets = async (req, res, next) => {
 
 	// query
 	const { pageSize, currentPage, userKey } = req.query
-
 	// db 연결
 	const conn = await db.getConnection();
 

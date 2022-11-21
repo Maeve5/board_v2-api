@@ -20,6 +20,7 @@ exports.change = async (req, res, next) => {
 			return false;
 		}
 
+		// 이름 변경
 		if (name) {
 			const sql = `
 				UPDATE
@@ -34,6 +35,7 @@ exports.change = async (req, res, next) => {
 			next();
 		}
 
+		// 비밀번호 변경
 		if (newPassword) {
 			// 비밀번호 암호화
 			const hashingPW = await bcrypt.hash(newPassword, 10);

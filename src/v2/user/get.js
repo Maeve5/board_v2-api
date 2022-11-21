@@ -2,15 +2,22 @@ const db = require("../../config/database");
 
 exports.get = async (req, res, next) => {
 	// `/v2/user/:userKey`
-console.log(req);
 	
 	// params
 	const { userKey } = req.params;
-
 	// db 연결
 	const conn = await db.getConnection();
 
 	try {
+		// 값이 없을 때
+		if (!userKey) {
+			res.locals.status = 400;
+			res.locals.data = { message: '잘못된 접근입니다.' };
+			next();
+			return false;
+		}
+
+		// 회원정보 조회
 		const sql = `
 			SELECT
 				*
