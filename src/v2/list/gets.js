@@ -30,7 +30,6 @@ exports.gets = async (req, res, next) => {
 		if (userKey) {
 			sql += `WHERE T.userKey=${conn.escape(userKey)}`
 		}
-
 		const result = await conn.query(sql);
 		const length = result[0].length;
 

@@ -1,5 +1,8 @@
 const db = require('../../config/database');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const jwtKey = require('../../config/secretKey');
+const Global = global;
 
 exports.change = async (req, res, next) => {
 	// `/v2/user/:userKey`
@@ -8,11 +11,13 @@ exports.change = async (req, res, next) => {
 	const { name, newPassword } = req.body;
 	// query
 	const userKey = req.params.userKey;
+	// token
+	let token = Global.decoded;
 	// db 연결
 	const conn = await db.getConnection();
 
 	try {
-
+		// 값이 없을 때
 		if (!userKey) {
 			res.locals.status = 400;
 			res.locals.data = { message: '잘못된 접근입니다.' };
@@ -30,7 +35,16 @@ exports.change = async (req, res, next) => {
 				WHERE isDelete='N' AND isLogin='Y' AND userKey=${conn.escape(userKey)}
 			`;
 			await conn.query(sql);
-	
+
+			// 토큰 재발급 (유효기간 그대로)
+			const newToken = jwt.sign({
+				...token,
+				name: name
+			}, jwtKey);
+			
+			// 쿠키 생성 (1w)
+			res.cookie('board_cookie', newToken, { domain: 'localhost', maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true });
+
 			res.locals.status=200;
 			next();
 		}

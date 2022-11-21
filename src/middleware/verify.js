@@ -22,6 +22,7 @@ const verify = async (req, res, next) => {
 			// decoded {
 			// 	type: 'JWT',
 			// 	userKey: 3,
+			//  name: 'c1',
 			// 	id: 'c',
 			// 	iat: 1668653497,
 			// 	exp: 1668739897,

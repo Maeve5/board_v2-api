@@ -17,9 +17,10 @@ exports.token = async (req, res, next) => {
 		// 회원
 		else {
 			const verify = jwt.verify(token, jwtKey);
+			console.log(verify);
 
 			res.locals.status = 200;
-			res.locals.data = { isLogin: true, token: token, userKey: verify.userKey };
+			res.locals.data = { isLogin: true, token: token, userKey: verify.userKey, userName: verify.name };
 			next();
 		}
 	}
