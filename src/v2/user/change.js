@@ -36,15 +36,6 @@ exports.change = async (req, res, next) => {
 			`;
 			await conn.query(sql);
 
-			// 토큰 재발급 (유효기간 그대로)
-			const newToken = jwt.sign({
-				...token,
-				name: name
-			}, jwtKey);
-			
-			// 쿠키 생성 (1w)
-			res.cookie('board_cookie', newToken, { domain: 'localhost', maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true });
-
 			res.locals.status=200;
 			next();
 		}

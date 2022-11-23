@@ -5,6 +5,7 @@ exports.gets = async (req, res, next) => {
 
 	// query
 	const { pageSize, currentPage, userKey } = req.query
+
 	// db 연결
 	const conn = await db.getConnection();
 
@@ -25,10 +26,10 @@ exports.gets = async (req, res, next) => {
 				ORDER BY L.rowKey DESC
 			) T
 		`;
-		
+
 		// 내가 쓴 글 조회
 		if (userKey) {
-			sql += `WHERE T.userKey=${conn.escape(userKey)}`
+			sql += `WHERE T.userKey=${conn.escape(userKey)}`;
 		}
 		const result = await conn.query(sql);
 		const length = result[0].length;
@@ -36,13 +37,13 @@ exports.gets = async (req, res, next) => {
 		// 페이지 별 게시글 조회
 		let sql1 = sql;
 		if (pageSize && currentPage) {
-			sql1 += `LIMIT ${pageSize*(currentPage-1)}, ${pageSize}`
+			sql1 += `LIMIT ${pageSize*(currentPage-1)}, ${pageSize}`;
 		}
 		const result1 = await conn.query(sql1);
 		const list = result1[0];
-		
+
 		res.locals.status = 200;
-		res.locals.data = {list, length};
+		res.locals.data = { ...res.locals.data, list, length};
 		next();
 	}
 	catch (error) {

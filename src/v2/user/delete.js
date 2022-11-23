@@ -50,7 +50,8 @@ exports.delete = async (req, res, next) => {
 		await conn.query(sql1);
 
 		// 쿠키 삭제
-		res.cookie('board_cookie', '', { domain: 'localhost', maxAge: -1, httpOnly: true });
+		res.cookie('board_accCookie', '', { domain: 'localhost', maxAge: -1, httpOnly: true });
+		res.cookie('board_refCookie', '', { domain: 'localhost', maxAge: -1, httpOnly: true });
 
 		// 내가 쓴 글 조회
 		const sql2 = `

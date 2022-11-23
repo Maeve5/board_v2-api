@@ -5,6 +5,7 @@ const jwtKey = require('../../config/secretKey');
 
 exports.login = async (req, res, next) => {
 	// `/v2/auth/login`
+
 	// body
 	const { id, password } = req.body;
 	// db 연결
@@ -54,14 +55,14 @@ exports.login = async (req, res, next) => {
 			return false;
 		}
 
-		// 토큰 발급 (24h, 7d)
+		// 토큰 발급
 		const accessToken = jwt.sign({
 			type: 'JWT',
 			userKey: user.userKey,
 			name: user.name,
 			id: user.id,
 		}, jwtKey, {
-			expiresIn: '1m',
+			expiresIn: '5h',
 			issuer: '발급자'
 		});
 
@@ -71,13 +72,13 @@ exports.login = async (req, res, next) => {
 			name: user.name,
 			id: user.id,
 		}, jwtKey, {
-			expiresIn: '7d',
+			expiresIn: '6h',
 			issuer: '발급자'
 		});
 		
-		// 쿠키 생성 (7d)
+		// 쿠키 생성
 		res.cookie('board_accCookie', accessToken, { domain: 'localhost', maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true });
-		res.cookie('board_refCookie', refreshToken, { domain: 'localhost', maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true });
+		res.cookie('board_refCookie', refreshToken, { domain: 'localhost', maxAge: 1000 * 60 * 60 * 24 * 7 * 52, httpOnly: true });
 
 		// 로그인 상태 변경
 		const sql2 = `
