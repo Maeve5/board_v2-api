@@ -2,6 +2,9 @@ const db = require('../../config/database');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const jwtKey = require('../../config/secretKey');
+const accExp = require('../../config/accExpTime');
+const refExp = require('../../config/refExpTime');
+const utils = require('../../modules/utils');
 
 exports.login = async (req, res, next) => {
 	// `/v2/auth/login`
@@ -56,25 +59,27 @@ exports.login = async (req, res, next) => {
 		}
 
 		// 토큰 발급
-		const accessToken = jwt.sign({
-			type: 'JWT',
-			userKey: user.userKey,
-			name: user.name,
-			id: user.id,
-		}, jwtKey, {
-			expiresIn: '5h',
-			issuer: '발급자'
-		});
+		const accessToken = utils.jwtSign(user, accExp);
+		// jwt.sign({
+		// 	type: 'JWT',
+		// 	userKey: user.userKey,
+		// 	name: user.name,
+		// 	id: user.id,
+		// }, jwtKey, {
+		// 	expiresIn: '5m',
+		// 	issuer: '발급자'
+		// });
 
-		const refreshToken = jwt.sign({
-			type: 'JWT',
-			userKey: user.userKey,
-			name: user.name,
-			id: user.id,
-		}, jwtKey, {
-			expiresIn: '6h',
-			issuer: '발급자'
-		});
+		const refreshToken = utils.jwtSign(user, refExp);
+		// jwt.sign({
+		// 	type: 'JWT',
+		// 	userKey: user.userKey,
+		// 	name: user.name,
+		// 	id: user.id,
+		// }, jwtKey, {
+		// 	expiresIn: '6h',
+		// 	issuer: '발급자'
+		// });
 		
 		// 쿠키 생성
 		res.cookie('board_accCookie', accessToken, { domain: 'localhost', maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true });

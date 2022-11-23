@@ -1,18 +1,15 @@
 const Global = global;
 const jwt = require('jsonwebtoken');
 const jwtKey = require('../config/secretKey');
-const moment = require('moment');
+const accExp = require('../config/accExpTime');
+const refExp = require('../config/refExpTime');
+const utils = require('../modules/utils');
 
 const verify = async (req, res, next) => {
 
 	// 유저 정보
 	let accToken = req.cookies?.board_accCookie;
 	let refToken = req.cookies?.board_refCookie;
-
-	// 현재 시간
-	const today = moment();
-
-	// try {
 
 	// 토큰이 없을 때
 	if (!accToken || accToken === 'null' || !refToken || refToken === 'null') {
@@ -28,34 +25,21 @@ const verify = async (req, res, next) => {
 
 		try {
 			// access 토큰 검증
-			const verify = jwt.verify(accToken, jwtKey);
-			// access 토큰 만료 시간
-			const exp = moment(verify.exp * 1000);
+			const accVerify = jwt.verify(accToken, jwtKey);
 			// access 토큰 만료까지 남은 시간
-			const expTime = {
-				hour: moment.duration(exp.diff(today)).hours(),
-				minute: moment.duration(exp.diff(today)).minutes(),
-				second: moment.duration(exp.diff(today)).seconds()
-			};
-			console.log('accExpTime', expTime.hour + '시간' + expTime.minute + '분' + expTime.second + '초');
+			const accExpTime = utils.expTime(accVerify);
+
+			console.log('accExpTime', accExpTime.hour + '시간' + accExpTime.minute + '분' + accExpTime.second + '초');
 
 			// access 토큰 만료 30m 전 토큰 재발급
-			if (expTime.hour === 0 && expTime.minute < 30) {
-				accToken = jwt.sign({
-					type: 'JWT',
-					userKey: verify.userKey,
-					name: verify.name,
-					id: verify.id,
-				}, jwtKey, {
-					expiresIn: '10s',
-					issuer: '발급자'
-				});
+			if (accExpTime.hour === 0 && accExpTime.minute < 30) {
+				accToken = utils.jwtSign(accVerify, accExp);
 
 				// access 토큰값 쿠키 생성
 				res.cookie('board_accCookie', accToken, { domain: 'localhost', maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true });
 			}
 			console.log('accToken1', accToken);
-			Global.decoded = { userKey: verify.userKey, name: verify.name, id: verify.id };
+			Global.decoded = { userKey: accVerify.userKey, name: accVerify.name, id: accVerify.id };
 			next();
 		}
 		catch (error) {
@@ -66,50 +50,28 @@ const verify = async (req, res, next) => {
 
 				try {
 					// refresh 토큰 검증
-					const verify = jwt.verify(refToken, jwtKey);
-					// refresh 토큰 만료 시간
-					const exp = moment(verify.exp * 1000);
+					const refVerify = jwt.verify(refToken, jwtKey);
 					// refresh 토큰 만료까지 남은 시간
-					const expTime = {
-						day: moment.duration(exp.diff(today)).days(),
-						hour: moment.duration(exp.diff(today)).hours(),
-						minute: moment.duration(exp.diff(today)).minutes(),
-						second: moment.duration(exp.diff(today)).seconds()
-					};
-					console.log('refExpTime', expTime.day + '일' + expTime.hour + '시간' + expTime.minute + '분' + expTime.second + '초');
+					const refExpTime = utils.expTime(refVerify);
+
+					console.log('refExpTime', refExpTime.day + '일' + refExpTime.hour + '시간' + refExpTime.minute + '분' + refExpTime.second + '초');
 
 					// access 토큰 재발급
-					accToken = jwt.sign({
-						type: 'JWT',
-						userKey: verify.userKey,
-						name: verify.name,
-						id: verify.id,
-					}, jwtKey, {
-						expiresIn: '10s',
-						issuer: '발급자'
-					});
+					accToken = utils.jwtSign(refVerify, accExp);
 
 					// 쿠키 생성
 					res.cookie('board_accCookie', accToken, { domain: 'localhost', maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true });
 
 					// refresh 토큰 만료 1h 전 토큰 재발급
-					if (expTime.day === 0 && expTime.hour === 0) {
-						refToken = jwt.sign({
-							type: 'JWT',
-							userKey: verify.userKey,
-							name: verify.name,
-							id: verify.id,
-						}, jwtKey, {
-							expiresIn: '11s',
-							issuer: '발급자'
-						});
+					if (refExpTime.day === 0 && refExpTime.hour === 0) {
+						refToken = utils.jwtSign(refVerify, refExp);
 
 						// 쿠키 생성
 						res.cookie('board_refCookie', refToken, { domain: 'localhost', maxAge: 1000 * 60 * 60 * 24 * 7 * 52, httpOnly: true });
 					}
 					console.log('accToken2', accToken);
 					console.log('refToken2', refToken);
-					Global.decoded = { userKey: verify.userKey, name: verify.name, id: verify.id };
+					Global.decoded = { userKey: refVerify.userKey, name: refVerify.name, id: refVerify.id };
 					next();
 				}
 				catch (error) {
