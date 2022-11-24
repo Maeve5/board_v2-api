@@ -43,7 +43,7 @@ exports.token = async (req, res, next) => {
 	catch (error) {
 		// 만료된 토큰
 		if (error.message === 'jwt expired') {
-			return res.status(200).json({ isLogin: false, message: '토큰이 만료되었습니다.' });
+			return res.status(419).json({ isLogin: false, message: '토큰이 만료되었습니다.' });
 		}
 		// 유효하지 않은 토큰 (비밀키 불일치)
 		else {

@@ -4,6 +4,8 @@ const Global = global;
 exports.insert = async (req, res, next) => {
 	// `/v2/list`
 
+	console.log(req);
+	
 	// body
 	const { title, description } = req.body;
 	// token

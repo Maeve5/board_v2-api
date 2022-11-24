@@ -33,14 +33,15 @@ const verify = async (req, res, next) => {
 		const conn = await db.getConnection();
 
 		try {
+
 			// access 토큰, 만료 시간
 			const [accVerify, accExpTime] = utils.decode(accToken);
-			// console.log('accExpTime', accExpTime.hour + '시간' + accExpTime.minute + '분' + accExpTime.second + '초');
+			console.log('accExpTime', accExpTime.hour + '시간' + accExpTime.minute + '분' + accExpTime.second + '초');
 			// console.log('accExpTime', accExpTime.total);
 
 			// refresh 토큰, 만료 시간
 			const [refVerify, refExpTime] = utils.decode(refToken);
-			// console.log('refExpTime', refExpTime.day + '일' + refExpTime.hour + '시간' + refExpTime.minute + '분' + refExpTime.second + '초');
+			console.log('refExpTime', refExpTime.day + '일' + refExpTime.hour + '시간' + refExpTime.minute + '분' + refExpTime.second + '초');
 			// console.log('refExpTime', refExpTime.total);
 
 			// DB에 저장된 refresh 토큰과 비교
@@ -59,6 +60,8 @@ const verify = async (req, res, next) => {
 				return false;
 			}
 
+
+			
 			// access 토큰만 만료
 			if (accExpTime.total <= 0 && refExpTime.total > 0) {
 				// refresh 토큰 검증
@@ -90,10 +93,12 @@ const verify = async (req, res, next) => {
 			}
 
 
+
 			// access 토큰 검증
 			jwt.verify(accToken, jwtKey);
 			// refresh 토큰 검증
 			jwt.verify(refToken, jwtKey);
+
 
 
 			// access 토큰 만료 5m 전 토큰 재발급
@@ -121,7 +126,9 @@ const verify = async (req, res, next) => {
 				await conn.query(sql1);
 				// console.log('refToken2 >> ', refToken);
 			}
+			
 
+		
 			// 사용자 정보
 			Global.decoded = { userKey: accVerify.userKey, name: accVerify.name, id: accVerify.id };
 			next();
