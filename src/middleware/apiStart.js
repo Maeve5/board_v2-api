@@ -1,4 +1,5 @@
 const apiStart = async (req, res, next) => {
+	// console.log('apiStart', req);
 	try {
 		res.locals.status = 0;
 		res.locals.data = null;

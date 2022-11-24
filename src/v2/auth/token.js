@@ -1,13 +1,13 @@
 const db = require('../../config/database');
 const jwt = require('jsonwebtoken');
 const jwtKey = require('../../config/secretKey');
-const moment = require('moment');
 
 exports.token = async (req, res, next) => {
 	// `/v2/auth/token`
 
 	// 토큰 정보
-	const token = req.headers.authorization;
+	let token = req.headers.authorization;
+	const refToken = req.body.refToken;
 	// db 연결
 	const conn = await db.getConnection();
 

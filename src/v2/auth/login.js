@@ -1,9 +1,8 @@
+const Global = global;
 const db = require('../../config/database');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const jwtKey = require('../../config/secretKey');
-const accExp = require('../../config/accExpTime');
-const refExp = require('../../config/refExpTime');
 const utils = require('../../modules/utils');
 
 exports.login = async (req, res, next) => {
@@ -57,6 +56,10 @@ exports.login = async (req, res, next) => {
 			next();
 			return false;
 		}
+
+		// 토큰 만료 기간
+		Global.accExp = '30m';
+		Global.refExp = '14d';
 
 		// 토큰 발급
 		const accessToken = utils.jwtSign(user, accExp);
