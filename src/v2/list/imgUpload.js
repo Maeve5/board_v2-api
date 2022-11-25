@@ -2,17 +2,14 @@ const db = require('../../config/database');
 const Global = global;
 
 exports.insert = async (req, res, next) => {
-	// `/v2/list`
+	// `/v2/list/img`
 
-	console.log('ddddd');
+	console.log('reqImg', req);
+
+	
 	// body
 	const { title, description } = req.body;
-
-	// file
-	const img = req.file;
-	console.log('reqImg', req.file);
-
-	// userSet
+	// token
 	const user = Global.decoded;
 	// db 연결
 	const conn = await db.getConnection();

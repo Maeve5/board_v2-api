@@ -41,6 +41,7 @@ exports.token = async (req, res, next) => {
 		}
 	}
 	catch (error) {
+		console.log(error);
 		// 만료된 토큰
 		if (error.message === 'jwt expired') {
 			return res.status(419).json({ isLogin: false, message: '토큰이 만료되었습니다.' });

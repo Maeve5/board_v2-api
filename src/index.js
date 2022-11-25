@@ -3,8 +3,8 @@ const ip = require('ip');
 const app = express();
 
 // request req.body 셋팅
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb', extended: false }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 // 쿠키 생성
 const cookieParser = require('cookie-parser');
@@ -22,6 +22,7 @@ app.use(
 
 // 라우터 설정
 app.use('/v2', require('./v2/router'));
+
 
 app.all('*', (req, res, next) => {
   if (res.status) {

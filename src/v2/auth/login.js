@@ -58,7 +58,7 @@ exports.login = async (req, res, next) => {
 		}
 
 		// 토큰 만료 기간
-		Global.accExp = '30h';
+		Global.accExp = '5h';
 		Global.refExp = '14d';
 
 		// 토큰 발급
