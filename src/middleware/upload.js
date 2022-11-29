@@ -1,7 +1,20 @@
-// const multer = require('multer');
-// const storage = require('./storage');
+const multer = require('multer');
 
-// const upload =  multer({ dest: '../img' });
-// const upload =  multer({ storage });
+const storage = multer.diskStorage({
+	destination: (req, file, cb) => {
+		console.log('storageDestination1', req);
+		console.log('storageDestination2', file);
+		console.log('storageDestination3', cb);
+		cb(null, '../img')
+	},
+	filename: (req, file, cb) => {
+		console.log('storageFilename1', req);
+		console.log('storageFilename2', file);
+		console.log('storageFilename3', cb);
+		cb(null, file.fieldname+' '+Date.now()+' '+file.originalname)
+	}
+})
 
-// module.exports = upload;
+const upload =  multer({ storage: storage });
+
+module.exports = upload;

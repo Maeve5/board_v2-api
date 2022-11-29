@@ -9,8 +9,9 @@ exports.insert = async (req, res, next) => {
 	const { title, description } = req.body;
 
 	// file
-	const img = req.file;
-	console.log('reqImg', req.file);
+	// const img = req.file;
+	console.log('reqImg', req.files);
+	// console.log('reqImg', req);
 
 	// userSet
 	const user = Global.decoded;
